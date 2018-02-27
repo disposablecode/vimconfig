@@ -12,7 +12,21 @@ set guioptions-=T  "remove toolbar
 set guioptions-=r  "remove right-hand scroll bar
 set guioptions-=L  "remove left-hand scroll bar
 
+" If a file is changed outside of vim, automatically reload it without asking
+set autoread
+
+set splitright
+set splitbelow
+
+"Make Y work like D and C
+nnoremap Y y$
+
+" Center screen on next search
+nnoremap n nzz
+nnoremap N Nzz
+
 let mapleader=","
+
 " Pathogen plugin
 runtime bundle/vim-pathogen/autoload/pathogen.vim
 execute pathogen#infect()
@@ -42,6 +56,7 @@ set shiftround " Indent/Deident to nearest 4-char boundary.
 set incsearch " Do incremental searching
 set number " Line numbers
 set completeopt=menu,longest,preview " Options for colpletion
+set cursorline " highlight current line
 
 
 " easier moving of code blocks
@@ -58,10 +73,16 @@ au InsertLeave * match ExtraWhitespace /\s\+$/
 
 
 " Color scheme
-colorscheme koehler
+colorscheme molokai
 
 " Custom maps
-map - ^
+nnoremap - ^
+nnoremap <leader>u gUiw
+inoremap <c-u> <esc>gUiwea
+nnoremap <leader><leader> <c-^>
+nnoremap <esc><esc> :update<CR>
+" Insert a hash rocket with <c-l>
+inoremap <c-l> <space>=><space>
 
 " Setting from vim as a python IDE .vimrc file
 set colorcolumn=80
@@ -78,6 +99,10 @@ set noswapfile
 " git submoduel add https://github.com/kien/ctrlp.vim.git
 let g:ctrlp_max_height = 30
 set wildignore+=*.pyc
+let g:ctrlp_custom_ignore = {
+  \ 'dir': '\v[\/](vendors|build|\.git|node_modules|documentation)'
+  \}
+let g:ctrlp_cmd = 'CtrlPBuffer'
 " TODO add ignore files for other programming languges
 
 " Settings for vim-airline
@@ -176,3 +201,16 @@ if has("gui_running")
     set guifont=Consolas:h11:cANSI
   endif
 endif
+
+" source: https://stackoverflow.com/questions/23279292/how-to-make-vim-understand-that-md-files-contain-markdown-code-and-not-modula#23279293
+" TODO: move to ~/.vim/ftdetect/markdown.vim
+autocmd BufNewFile,BufFilePre,BufRead *.md set filetype=markdown
+
+" Netrw config
+let g:netrw_liststyle = 3
+let g:netrw_sort_direction = "reverse"
+let g:netrw_sort_by = "time"
+
+" Insert system date
+nnoremap <F3> "=strftime("%Y-%m-%d")<CR>Pa<space><esc>
+inoremap <F3> <C-r>=strftime("%Y-%m-%d")<CR>
