@@ -214,3 +214,9 @@ let g:netrw_sort_by = "time"
 " Insert system date
 nnoremap <F3> "=strftime("%Y-%m-%d")<CR>Pa<space><esc>
 inoremap <F3> <C-r>=strftime("%Y-%m-%d")<CR>
+
+" omnisharp-vim
+let g:Omnisharp_start_server = 0
+let g:Omnisharp_stop_server = 0
+let g:OmniSharp_server_type = 'roslyn'
+let g:OmniSharp_prefer_global_sln = 1 " I don't know what this line is for
