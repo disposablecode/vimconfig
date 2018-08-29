@@ -180,7 +180,7 @@ endif
 set hidden
 
 " Indent according to file type
-au BufNewFile,BufRead *.js,*.html,*.css
+au BufNewFile,BufRead *.js,*.html,*.css,*.rb
     \ set shiftwidth=2
 
 au BufNewFile,BufRead *.py
