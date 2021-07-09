@@ -1,0 +1,9 @@
+Excecute python script from vi by pressing carriage return
+:map <cr> :w\|:!python3 %<cr>
+
+Run python script from command line
+#!/usr/bin/env python3
+
+Excecute ruby script from vi by pressing carriage return
+:map <cr> :w\|:!ruby %<cr>
+

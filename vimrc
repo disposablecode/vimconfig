@@ -28,10 +28,12 @@ nnoremap N Nzz
 let mapleader=","
 
 " Pathogen plugin
+filetype off
 runtime bundle/vim-pathogen/autoload/pathogen.vim
-execute pathogen#infect()
-syntax on " Turn on all the magic, including Explorer and syntax highlighting
+call pathogen#infect()
+call pathogen#helptags()
 filetype plugin indent on
+syntax on " Turn on all the magic, including Explorer and syntax highlighting
 
 " vim like a pro book settings
 set showmode " Show me when I'm in insert/overtype mode
@@ -76,17 +78,24 @@ au InsertLeave * match ExtraWhitespace /\s\+$/
 colorscheme molokai
 
 " Custom maps
-nnoremap - ^
-nnoremap <leader>u gUiw
-inoremap <c-u> <esc>gUiwea
+"nnoremap - ^
+" map for all modes to test how this work REVERT in case of extrange behaviour
+noremap - ^
+nnoremap <leader>u guiw
+nnoremap <leader>U gUiw
+" Do not map in insert mode
+" inoremap <c-u> <esc>gUiwea
 nnoremap <leader><leader> <c-^>
-nnoremap <esc><esc> :update<CR>
+nnoremap <esc><esc> :update<cr>
 " Insert a hash rocket with <c-l>
-inoremap <c-l> <space>=><space>
+inoremap <c-l>r <space>=><space>
+inoremap <c-l>c }<esc>i{<cr><esc>O
+inoremap <c-l>p )<esc>i(
+inoremap <c-l>a <esc>O
 
 " Setting from vim as a python IDE .vimrc file
 set colorcolumn=80
-highlight ColorColumn ctermbg=233
+highlight ColorColumn ctermbg=234
 set undolevels=700
 " Disable stupid backup and swap files - they trigger too many events
 " for file system watchers
@@ -102,7 +111,9 @@ set wildignore+=*.pyc
 let g:ctrlp_custom_ignore = {
   \ 'dir': '\v[\/](vendors|build|\.git|node_modules|documentation)'
   \}
-let g:ctrlp_cmd = 'CtrlPBuffer'
+"let g:ctrlp_cmd = 'CtrlPBuffer'
+" Use Mixed instead of buffer
+let g:ctrlp_cmd = 'CtrlPMixed'
 " TODO add ignore files for other programming languges
 
 " Settings for vim-airline
@@ -110,6 +121,9 @@ let g:ctrlp_cmd = 'CtrlPBuffer'
 " git submodule add https://github.com/vim-airline/vim-airline.git
 " Use powerline-fonts to display the fancy symbols correctly
 set laststatus=2 " Show status line always
+
+" source: https://medium.com/@jeantimex/how-to-configure-iterm2-and-vim-like-a-pro-on-macos-e303d25d5b5c
+let g:airline_powerline_fonts = 1
 
 " Settings for jedi-vim
 " cd ~/.vim/bundle
@@ -133,29 +147,33 @@ function! OmniPopup(action)
     return a:action
 endfunction
 
-inoremap <silent><C-j> <C-R>=OmniPopup('j')<CR>
-inoremap <silent><C-k> <C-R>=OmniPopup('k')<CR>
+inoremap <silent><C-j> <C-R>=OmniPopup('j')<cr>
+inoremap <silent><C-k> <C-R>=OmniPopup('k')<cr>
 
 
 " Settings from vim-as-a-python-ide-master\.vimrc
 " Bind nohl
 " Removes highlight of your last search
 " ``<C>`` stands for ``CTRL`` and therefore ``<C-n>`` stands for ``CTRL+n``
-noremap <C-n> :nohl<CR>
-vnoremap <C-n> :nohl<CR>
+noremap <C-n> :nohl<cr>
+vnoremap <C-n> :nohl<cr>
 " Do not map in insert mode
-" inoremap <C-n> :nohl<CR>
+" inoremap <C-n> :nohl<cr>
 
 
 " Quicksave command
-noremap <C-Z> :update<CR>
-vnoremap <C-Z> <C-C>:update<CR>
-inoremap <C-Z> <C-O>:update<CR>
+"noremap <C-Z> :update<cr>
+"vnoremap <C-Z> <C-C>:update<cr>
+" Do not map in insert mode
+" inoremap <C-Z> <C-O>:update<cr>
+" map <C-Z> to close folder in TreeView of netrw as is noted in netrw docs
+" nmap <buffer> <silent> <nowait> <c-z> <Plug>NetrwTreeSqueeze
+" previous map is in vimfiles/ftplugin/netrw/netrw.vim
 
 
 " Quick quit command
-noremap <Leader>e :quit<CR>  " Quit current window
-noremap <Leader>E :qa!<CR>   " Quit all windows
+noremap <Leader>e :quit<cr>  " Quit current window
+noremap <Leader>E :qa!<cr>   " Quit all windows
 
 
 " bind Ctrl+<movement> keys to move around the windows, instead of using Ctrl+w + <movement>
@@ -164,6 +182,9 @@ map <c-j> <c-w>j
 map <c-k> <c-w>k
 map <c-l> <c-w>l
 map <c-h> <c-w>h
+" map <c-l> for netrw
+" source: https://vi.stackexchange.com/questions/5531/how-to-remap-i-in-netrw
+"au! filetype netrw noremap <buffer> <c-l> <c-w>l
 
 " Settings for SimpylFold
 " cd ~/.vim/bundle
@@ -180,7 +201,7 @@ endif
 set hidden
 
 " Indent according to file type
-au BufNewFile,BufRead *.js,*.html,*.css,*.rb
+au BufNewFile,BufRead *.js,*.html,*.css,*.rb,*.md,*.txt
     \ set shiftwidth=2
 
 au BufNewFile,BufRead *.py
@@ -207,16 +228,86 @@ endif
 autocmd BufNewFile,BufFilePre,BufRead *.md set filetype=markdown
 
 " Netrw config
-let g:netrw_liststyle = 3
-let g:netrw_sort_direction = "reverse"
-let g:netrw_sort_by = "time"
+let g:netrw_liststyle = 0
+let g:netrw_sort_direction = "normal"
+let g:netrw_sort_by = "exten"
+" source: https://shapeshed.com/vim-netrw/
+"let g:netrw_banner = 0
+"let g:netrw_browse_split = 4
+"let g:netrw_altv = 1
+"let g:netrw_winsize = 20
 
 " Insert system date
-nnoremap <F3> "=strftime("%Y-%m-%d")<CR>Pa<space><esc>
-inoremap <F3> <C-r>=strftime("%Y-%m-%d")<CR>
+nnoremap <F3> "=strftime("%Y-%m-%d")<cr>Pa<space><esc>
+" We should't need it in insert mode
+" inoremap <F3> <C-r>=strftime("%Y-%m-%d")<cr>
 
 " omnisharp-vim
 let g:Omnisharp_start_server = 0
 let g:Omnisharp_stop_server = 0
 let g:OmniSharp_server_type = 'roslyn'
 let g:OmniSharp_prefer_global_sln = 1 " I don't know what this line is for
+
+
+" vim-jsx-pretty
+" cd ~/.vim/bundle
+" git submoduel add https://github.com/MaxMEllon/vim-jsx-pretty
+let g:vim_jsx_pretty_highlight_close_tag = 1
+let g:vim_jsx_pretty_colorful_config = 1
+
+
+" NerdCommenter React.js filetype
+let g:NERDCustomDelimiters = { 'javascript': { 'left': '//', 'leftAlt': '{/*', 'rightAlt': '*/}' } }
+
+"source https://unix.stackexchange.com/questions/141097/how-to-enable-and-use-code-folding-in-vim/336537#336537
+"folding settings
+au! BufNewFile,BufRead *.js
+    \ set foldmethod=syntax |
+    \ set foldnestmax=10 |
+    \ set nofoldenable |
+    \ set foldlevel=2
+"\ set foldmethod=syntax | "fold based on indent
+"\ set foldnestmax=10 | "deepest fold is 10 levels
+"\ set nofoldenable | "dont fold by default
+"\ set foldlevel=2 "this is just what i use
+
+" Toggle Netrw left explore
+"nnoremap <leader>w :Rexplore<cr>
+" Stop using the project drawer style.
+" source: http://vimcasts.org/blog/2013/01/oil-and-vinegar-split-windows-and-project-drawer/
+
+" Open item from quickfix in vertical split
+" source: https://stackoverflow.com/questions/16743112/open-item-from-quickfix-window-in-vertical-split
+autocmd! FileType qf nnoremap <buffer> <leader><Enter> <C-w><Enter><C-w>L
+
+"Use custom emmet expand abbreviation
+let g:user_emmet_expandabbr_key = '<C-b>,'
+let g:user_emmet_expandword_key = '<C-b>;'
+let g:user_emmet_update_tag = '<C-b>u'
+let g:user_emmet_balancetaginward_key = '<C-b>d'
+let g:user_emmet_balancetagoutward_key = '<C-b>D'
+let g:user_emmet_next_key = '<C-b>n'
+let g:user_emmet_prev_key = '<C-b>N'
+let g:user_emmet_imagesize_key = '<C-b>i'
+let g:user_emmet_togglecomment_key = '<C-b>/'
+let g:user_emmet_splitjointag_key = '<C-b>j'
+let g:user_emmet_removetag_key = '<C-b>k'
+let g:user_emmet_anchorizeurl_key = '<C-b>a'
+let g:user_emmet_anchorizesummary_key = '<C-b>A'
+let g:user_emmet_mergelines_key = '<C-b>m'
+let g:user_emmet_codepretty_key = '<C-b>c'
+
+au! filetype netrw nmap <leader>o <cr>
+
+" Map vinegar vim. source: https://github.com/tpope/vim-vinegar
+nmap <leader>- <Plug>VinegarUp
+
+
+" Only for mac spanish keyboard: exit insert mode and save
+inoremap ´s <esc>:update<cr>
+nnoremap ´s :update<cr>
+vnoremap ´s <esc>
+
+au BufNewFile,BufRead *.md,*.txt
+    \ set wrap
+
